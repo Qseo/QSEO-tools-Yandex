@@ -55,3 +55,7 @@ Changelog
 
 2014-01-21: Первая публичная версия
 
+
+Скриншот с примером работы скрипта:
+------------------------
+![Скриншот с примером работы скрипта](https://github.com/Qseo/QSEO-tools-Yandex/raw/master/qseo-tools-yandex-screenshot.png)
