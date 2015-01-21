@@ -2,7 +2,7 @@
 // @name        QSEO-tools-Yandex
 // @namespace   yandex
 // @description  Different SEO Tools and helper functions for Yandex Search engine from qseo.ru 
-// @version     1.4
+// @version     1.5
 // @updateURL   https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @downloadURL https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @include     http://yandex.ru/*
@@ -29,6 +29,19 @@ var regionList = regionStr.split(';');
 var regionBlock = '<div id="yandex-serp-regionlist" style="font-size: 11px"><div class="list-title">Сменить регион:</div><div class="list-items">[regionlist]</div><div class="settings">[<a class="settings" style="text-decoration: none;" href="#">настроить</a>]</div><div class="links" style="margin-top: 10px"><a href="http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex" target="_blank" title="Качественное продвижение сайтов в сети Интернет"><img src="http://qseo.ru/logo/qseo_logo_w70.png?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex" alt="Качественное продвижение сайтов в сети Интернет"></a></div></div>';
 
 var urlParams;
+
+window.qseoToolsUpdateUrlParams = function() {
+    var match,
+        pl     = /\+/g,  // Regex for replacing addition symbol with a space
+        search = /([^&=]+)=?([^&]*)/g,
+        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+        query  = window.location.search.substring(1);
+
+    urlParams = {};
+    while (match = search.exec(query))
+       urlParams[decode(match[1])] = decode(match[2]);
+}
+/*
 (window.onpopstate = function () {
     var match,
         pl     = /\+/g,  // Regex for replacing addition symbol with a space
@@ -39,13 +52,12 @@ var urlParams;
     urlParams = {};
     while (match = search.exec(query))
        urlParams[decode(match[1])] = decode(match[2]);
-})();
+})();*/
 
 function urlAddLr(lr) {
   if(lr == -1) {
     return document.URL.replace(/[\?&]lr=\d+/,''); 
   }
-
   if(urlParams['lr']) {
     return document.URL.replace(/lr=\d+/,'lr=' + lr);
   } else {
@@ -55,6 +67,7 @@ function urlAddLr(lr) {
 
 
 window.qseoToolsParse = function(event) {
+  qseoToolsUpdateUrlParams();
   
   if(!$(".YaPlaceNumber").length && $(".serp-item_plain_yes").length)  {
   
