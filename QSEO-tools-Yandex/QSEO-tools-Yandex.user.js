@@ -1,6 +1,6 @@
 ﻿// ==UserScript==
 // @name        QSEO-tools-Yandex
-// @namespace   http://qseo.ru/
+// @namespace   http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex&utm_content=namespace
 // @description  Different SEO Tools and helper functions for Yandex Search engine from qseo.ru 
 // @version     1.7
 // @updateURL   https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
@@ -24,7 +24,7 @@ if(typeof GM_getValue == undefined || GM_getValue('regionStr') == null) {
     regionStr = GM_getValue('regionStr',regionStr_default);
 }
 
-var regionBlock = '<div id="yandex-serp-regionlist" style="font-size: 11px"><div class="list-title">Сменить регион:</div><div class="list-items">[regionlist]</div><div class="settings">[<a class="settings" style="text-decoration: none;" href="#">настроить</a>]</div><div class="links" style="margin-top: 10px"><a href="http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex" target="_blank" title="Качественное продвижение сайтов в сети Интернет"><img src="http://qseo.ru/logo/qseo_logo_w70.png?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex" alt="Качественное продвижение сайтов в сети Интернет"></a></div></div>';
+var regionBlock = '<div id="yandex-serp-regionlist" style="font-size: 11px"><div class="list-title">Сменить регион:</div><div class="list-items">[regionlist]</div><div class="settings">[<a class="settings" style="text-decoration: none;" href="#">настроить</a>]</div><div class="links" style="margin-top: 10px"><a href="http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex" target="_blank" title="Качественное продвижение сайтов в сети Интернет"><img src="http://qseo.ru/logo/qseo_logo_w70.png?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex&utm_content=logo_left" alt="Качественное продвижение сайтов в сети Интернет"></a></div></div>';
 
 var urlParams;
 
