@@ -2,14 +2,15 @@
 
 Different SEO Tools and helper functions for Yandex Search engine (UserScript) from qseo.ru
 
-- Shows result numbers in Yandex search pages 
-- Adds region swither
+- Shows result numbers in Yandex search result pages
+- Adds links for quick switching geo region
 - Highlight Yandex advertising and services blocks in search result items
 
 Copyright
 ------------------------
 
 Author: Alexey Murz Korepov
+
 E-mail: seo@qseo.ru
 
 Description in Russian
@@ -52,5 +53,5 @@ Description in Russian
 Changelog
 ------------------------
 
-2014-01-21: Initial release
+2014-01-21: Первая публичная версия
 

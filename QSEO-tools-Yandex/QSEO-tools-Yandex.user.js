@@ -2,11 +2,13 @@
 // @name        QSEO-tools-Yandex
 // @namespace   yandex
 // @description  Different SEO Tools and helper functions for Yandex Search engine from qseo.ru 
+// @version     1.4
+// @updateURL   https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
+// @downloadURL https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @include     http://yandex.ru/*
 // @include     http://yandex.ua/*
 // @include     http://yandex.kz/*
 // @include     http://yandex.by/*
-// @version     1.4
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js
 // @grant GM_getValue
 // @grant GM_setValue
