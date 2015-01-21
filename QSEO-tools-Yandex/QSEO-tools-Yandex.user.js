@@ -1,8 +1,8 @@
 ﻿// ==UserScript==
 // @name        QSEO-tools-Yandex
-// @namespace   yandex
+// @namespace   http://qseo.ru/
 // @description  Different SEO Tools and helper functions for Yandex Search engine from qseo.ru 
-// @version     1.6
+// @version     1.7
 // @updateURL   https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @downloadURL https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @include     http://yandex.ru/*
