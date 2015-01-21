@@ -2,7 +2,7 @@
 // @name        QSEO-tools-Yandex
 // @namespace   http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex&utm_content=namespace
 // @description  Different SEO Tools and helper functions for Yandex Search engine from qseo.ru 
-// @version     1.7
+// @version     1.8
 // @updateURL   https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @downloadURL https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @include     http://yandex.ru/*
@@ -132,8 +132,9 @@ window.qseoToolsParse = function(event) {
             GM_setValue('regionStr', regionStr);
         });
         
-        window.addEventListener('DOMNodeInserted', qseoToolsParse, false); 
     }
 }
 
 window.qseoToolsParse();
+
+$('.main__center-inner').get(0).addEventListener('DOMNodeInserted', qseoToolsParse, false); 
