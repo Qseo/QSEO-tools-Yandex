@@ -2,12 +2,13 @@
 // @name        QSEO-tools-Yandex
 // @namespace   http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex&utm_content=namespace
 // @description  Different SEO Tools and helper functions for Yandex Search engine from qseo.ru 
-// @version     1.9
+// @version     2.0
 // @updateURL   https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @downloadURL https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @include     http://yandex.*/*
 // @include     https://yandex.*/*
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js
+// @require     https://raw.githubusercontent.com/carhartl/jquery-cookie/master/src/jquery.cookie.js
 // @grant GM_getValue
 // @grant GM_setValue
 // ==/UserScript==
@@ -22,7 +23,7 @@ if(typeof GM_getValue == undefined || GM_getValue('regionStr') == null) {
     regionStr = GM_getValue('regionStr',regionStr_default);
 }
 
-var regionBlock = '<div id="yandex-serp-regionlist" style="font-size: 11px"><div class="list-title">Сменить регион:</div><div class="list-items">[regionlist]</div><div class="settings">[<a class="settings" style="text-decoration: none;" href="#">настроить</a>]</div><div class="links" style="margin-top: 10px"><a href="http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex" target="_blank" title="Качественное продвижение сайтов в сети Интернет"><img src="http://qseo.ru/logo/qseo_logo_w70.png?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex&utm_content=logo_left" alt="Качественное продвижение сайтов в сети Интернет"></a></div></div>';
+var regionBlock = '<div id="qseo-yandex-regionlist" style="font-size: 11px"><div class="region-default">Регион в настройках: <div class="region-name">[regiondefault]</div><br/></div><div class="list-title">Сменить на:</div><div class="list-items">[regionlist]</div><div class="settings">[<a class="settings" style="text-decoration: none;" href="#">настроить</a>]</div><div class="links" style="margin-top: 10px"><a href="http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex" target="_blank" title="Качественное продвижение сайтов в сети Интернет"><img src="http://qseo.ru/logo/qseo_logo_w70.png?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex&utm_content=logo_left" alt="Качественное продвижение сайтов в сети Интернет"></a></div></div>';
 
 var urlParams;
 
@@ -65,9 +66,9 @@ function urlAddLr(lr) {
 window.qseoToolsParse = function(event) {
     qseoToolsUpdateUrlParams();
     
-    if(!$(".YaPlaceNumber").length && $(".serp-item_plain_yes").length)  {
+    if(!$(".qseo-place-number").length && $(".serp-item_plain_yes").length)  {
         
-        $("#yandex-serp-regionlist").remove();
+        $("#qseo-yandex-regionlist").remove();
         
         var numdoc = urlParams['numdoc']?urlParams['numdoc']:10,
             p = urlParams['p']?urlParams['p']:1;
@@ -85,8 +86,8 @@ window.qseoToolsParse = function(event) {
         [].forEach.call(document.querySelectorAll('.serp-item_plain_yes,.z-address'), function(e) {
             if (e.getElementsByClassName('serp-item__label').length == 0) {
                 var t = document.createElement('div');
-                t.setAttribute('style', 'float: left; margin-left: -24px; padding-top: 13px; text-align: right; width: 24px;');
-                t.setAttribute('class', 'YaPlaceNumber');
+                t.setAttribute('style', 'float: left; margin-left: -20px; padding-top: 13px; text-align: right; width: 24px;');
+                t.setAttribute('class', 'qseo-place-number');
                 t.innerHTML = place + '.';
                 e.insertBefore(t, e.firstChild);
                 place ++;
@@ -99,17 +100,24 @@ window.qseoToolsParse = function(event) {
             
             var regionList = regionStr.split(';');
             
-            var regionsListCurrent = '';      
+            var regionListKeys = [];
+            
+            var regionsListCurrent = '';    
+            
+            var YaCookieRegion = $.cookie('yandex_gid');
             
             for(key in regionList) {
-                
                 if(!regionList[key]) continue;
                 
                 region = regionList[key].split(':');
+                regionListKeys[region[0]] = region[1];
                 
                 str = '<a style="text-decoration: none" href=' + urlAddLr(region[0]) + '>' + region[1] + '</a>';
                 if((region[0]=='-1' && urlParams['lr'] == undefined) || (urlParams['lr'] == region[0])) { 
-                    str = '<strong>' + str + '</strong>'; 
+                    str = '<div style="background: #FFF8DC; display: table-cell"><strong>' + str + '</strong>'; 
+                    if(YaCookieRegion != region[0])
+                      str = str + '<br/>[<a id="qseo-region-save" class="'+region[0]+'" href="#">Запомнить</a>]';
+                    str = str + '</div>'; 
                 }
                 str = '<div style="line-height: 1.7em">' + str + '</div>';
                 regionsListCurrent = regionsListCurrent + str;
@@ -120,14 +128,36 @@ window.qseoToolsParse = function(event) {
             regionsListCurrent = regionBlock.replace('[regionlist]','[не настроено]');
         }
         
+        if(YaCookieRegion) {
+          if(regionListKeys[YaCookieRegion])
+              YaCookieRegion = regionListKeys[YaCookieRegion];
+          else
+              YaCookieRegion = "id " + YaCookieRegion;
+          //regionsListCurrent = regionsListCurrent.replace('[regiondefault]', regionList[regiondefault] ? regionList[regiondefault] : "id "+regiondefault);
+          regionsListCurrent = regionsListCurrent.replace('[regiondefault]',  YaCookieRegion);
+        } else {
+          regionsListCurrent = regionsListCurrent.replace('[regiondefault]',  'Авто');
+        }
+        
+        
         $(".main__left").prepend($(regionsListCurrent));
         
         $('.serp-adv__block').css('background-color','#FFF8E1');
         $('.t-images, .t-images div, .t-video div, .z-market div, .z-address div, .t-news div').css('background-color','#EDFCFF');
         //$('.div[class^=" t-" div').css('background-color','#EDFCFF');
-        $('#yandex-serp-regionlist a.settings').click(function() {
+        $('#qseo-yandex-regionlist a.settings').click(function() {
             regionStr = prompt("Настройка списка регионов (формат: id1:name1;id2:name2;id3:name3): ", regionStr);
             GM_setValue('regionStr', regionStr);
+        });
+        
+       $('#qseo-region-save').click(function() {
+            var saveRegionId = $(this).attr("class");
+            $.cookie('yandex_gid', saveRegionId, {path: "/", domain: "yandex.ru"});
+            $(this).text('Запомнено');
+            //$(this).text('Запомнено id ' + saveRegionId);
+            $('.region-default .region-name').text($(this).parent().children('strong').text());
+            //location.reload();                
+            //$('#qseo-region-save').parent().parent().remove();
         });
         
     }
