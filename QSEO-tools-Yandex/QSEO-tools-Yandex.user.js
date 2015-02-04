@@ -2,7 +2,7 @@
 // @name        QSEO-tools-Yandex
 // @namespace   http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex&utm_content=namespace
 // @description  Different SEO Tools and helper functions for Yandex Search engine from qseo.ru 
-// @version     2.0
+// @version     2.1
 // @updateURL   https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @downloadURL https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @include     http://yandex.*/*
@@ -143,7 +143,7 @@ window.qseoToolsParse = function(event) {
         $(".main__left").prepend($(regionsListCurrent));
         
         $('.serp-adv__block').css('background-color','#FFF8E1');
-        $('.t-images, .t-images div, .t-video div, .z-market div, .z-address div, .t-news div').css('background-color','#EDFCFF');
+        $('.t-images, .t-images div, .t-video div, .z-market div, .z-address div, .t-news div, .z-news, .z-news__links, .z-maps, .t-news-rubrics').css('background-color','#EDFCFF');
         //$('.div[class^=" t-" div').css('background-color','#EDFCFF');
         $('#qseo-yandex-regionlist a.settings').click(function() {
             regionStr = prompt("Настройка списка регионов (формат: id1:name1;id2:name2;id3:name3): ", regionStr);
