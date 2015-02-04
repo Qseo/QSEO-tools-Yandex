@@ -2,7 +2,7 @@
 // @name        QSEO-tools-Yandex
 // @namespace   http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex&utm_content=namespace
 // @description  Different SEO Tools and helper functions for Yandex Search engine from qseo.ru 
-// @version     2.1
+// @version     2.2
 // @updateURL   https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @downloadURL https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @include     http://yandex.*/*
@@ -62,6 +62,34 @@ function urlAddLr(lr) {
     }
 }
 
+
+function checkSerpBlock(item, check_children = true) {
+//  item.css('background-color','red');
+//  item.children('div').css('background-color','red');
+    
+  var detected=false;
+    
+//    alert('checkSerpBlock ' + item.attr('class'));
+    
+  if(item.attr('class').search(/images|video|market|address|news/) != -1) {
+    detected = true;
+  } else if(check_children == true) {
+    item.children('div').each(function() {
+        //alert("children "+ $(this).attr('class'));
+        if($(this).attr('class').search(/images|video|market|address|news/) != -1) {
+          detected = true;
+          //print("detected in children ");
+          return;
+        }
+    });
+  } 
+                                                                
+  if(detected) {
+    item.css('background-color','#EDFCFF');
+    item.children('div').css('background-color','#EDFCFF');
+    item.children('a').css('background-color','#EDFCFF');
+  } 
+}
 
 window.qseoToolsParse = function(event) {
     qseoToolsUpdateUrlParams();
@@ -143,7 +171,8 @@ window.qseoToolsParse = function(event) {
         $(".main__left").prepend($(regionsListCurrent));
         
         $('.serp-adv__block').css('background-color','#FFF8E1');
-        $('.t-images, .t-images div, .t-video div, .z-market div, .z-address div, .t-news div, .z-news, .z-news__links, .z-maps, .t-news-rubrics').css('background-color','#EDFCFF');
+        $('.serp-item__wrap').each(function() { checkSerpBlock($(this)); });
+        $('.serp-block').each(function() { checkSerpBlock($(this),false); });
         //$('.div[class^=" t-" div').css('background-color','#EDFCFF');
         $('#qseo-yandex-regionlist a.settings').click(function() {
             regionStr = prompt("Настройка списка регионов (формат: id1:name1;id2:name2;id3:name3): ", regionStr);
@@ -162,6 +191,7 @@ window.qseoToolsParse = function(event) {
         
     }
 }
+
 
 window.qseoToolsParse();
 
