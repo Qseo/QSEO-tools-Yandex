@@ -2,7 +2,7 @@
 // @name        QSEO-tools-Yandex
 // @namespace   http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex&utm_content=namespace
 // @description  Different SEO Tools and helper functions for Yandex Search engine from qseo.ru 
-// @version     2.2
+// @version     2.3
 // @updateURL   https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @downloadURL https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @include     http://yandex.*/*
@@ -38,18 +38,6 @@ window.qseoToolsUpdateUrlParams = function() {
     while (match = search.exec(query))
         urlParams[decode(match[1])] = decode(match[2]);
 }
-/*
-(window.onpopstate = function () {
-    var match,
-        pl     = /\+/g,  // Regex for replacing addition symbol with a space
-        search = /([^&=]+)=?([^&]*)/g,
-        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
-        query  = window.location.search.substring(1);
-
-    urlParams = {};
-    while (match = search.exec(query))
-       urlParams[decode(match[1])] = decode(match[2]);
-})();*/
 
 function urlAddLr(lr) {
     if(lr == -1) {
@@ -63,22 +51,16 @@ function urlAddLr(lr) {
 }
 
 
-function checkSerpBlock(item, check_children = true) {
-//  item.css('background-color','red');
-//  item.children('div').css('background-color','red');
+function checkSerpBlock(item, check_children) {
     
   var detected=false;
-    
-//    alert('checkSerpBlock ' + item.attr('class'));
     
   if(item.attr('class').search(/images|video|market|address|news/) != -1) {
     detected = true;
   } else if(check_children == true) {
     item.children('div').each(function() {
-        //alert("children "+ $(this).attr('class'));
         if($(this).attr('class').search(/images|video|market|address|news/) != -1) {
           detected = true;
-          //print("detected in children ");
           return;
         }
     });
@@ -161,7 +143,6 @@ window.qseoToolsParse = function(event) {
               YaCookieRegion = regionListKeys[YaCookieRegion];
           else
               YaCookieRegion = "id " + YaCookieRegion;
-          //regionsListCurrent = regionsListCurrent.replace('[regiondefault]', regionList[regiondefault] ? regionList[regiondefault] : "id "+regiondefault);
           regionsListCurrent = regionsListCurrent.replace('[regiondefault]',  YaCookieRegion);
         } else {
           regionsListCurrent = regionsListCurrent.replace('[regiondefault]',  'Авто');
@@ -171,9 +152,9 @@ window.qseoToolsParse = function(event) {
         $(".main__left").prepend($(regionsListCurrent));
         
         $('.serp-adv__block').css('background-color','#FFF8E1');
-        $('.serp-item__wrap').each(function() { checkSerpBlock($(this)); });
+        $('.serp-item__wrap').each(function() { checkSerpBlock($(this), true); });
         $('.serp-block').each(function() { checkSerpBlock($(this),false); });
-        //$('.div[class^=" t-" div').css('background-color','#EDFCFF');
+        
         $('#qseo-yandex-regionlist a.settings').click(function() {
             regionStr = prompt("Настройка списка регионов (формат: id1:name1;id2:name2;id3:name3): ", regionStr);
             GM_setValue('regionStr', regionStr);
@@ -183,10 +164,7 @@ window.qseoToolsParse = function(event) {
             var saveRegionId = $(this).attr("class");
             $.cookie('yandex_gid', saveRegionId, {path: "/", domain: "yandex.ru"});
             $(this).text('Запомнено');
-            //$(this).text('Запомнено id ' + saveRegionId);
             $('.region-default .region-name').text($(this).parent().children('strong').text());
-            //location.reload();                
-            //$('#qseo-region-save').parent().parent().remove();
         });
         
     }
