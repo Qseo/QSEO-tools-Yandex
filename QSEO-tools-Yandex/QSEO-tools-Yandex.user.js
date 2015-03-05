@@ -1,13 +1,12 @@
 ﻿// ==UserScript==
 // @name        QSEO-tools-Yandex
-// @namespace   http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex&utm_content=namespace
+// @namespace   http://qseo.ru
 // @description  Different SEO Tools and helper functions for Yandex Search engine from qseo.ru 
-// @version     2.3
+// @version     2.4
 // @updateURL   https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @downloadURL https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
-// @include     http://yandex.*/*
-// @include     https://yandex.*/*
-// @require     http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js
+// @include     http*://yandex.*/yandsearch*
+// @require     http://code.jquery.com/jquery-latest.min.js
 // @require     https://raw.githubusercontent.com/carhartl/jquery-cookie/master/src/jquery.cookie.js
 // @grant GM_getValue
 // @grant GM_setValue
@@ -15,7 +14,16 @@
 
 var regionStr_default = '-1:Автоматически;47:Н.Новгород;213:Москва;2:С-Петербург;11079:Нижегор.обл;972:Дзержинск;20044:Кстово;0:Без региона';
 
+var color_context = '#FFF8E1';
+var color_service = '#EDFCFF';
+var color_warning = '#ffe5e5';
+
 var regionStr;
+
+var regionBlock = '<div id="qseo-yandex-regionlist" style="font-size: 11px"><div class="region-default">Регион в настройках: <div class="region-name">[regiondefault]</div><br/></div><div class="list-title">Сменить на:</div><div class="list-items">[regionlist]</div><div class="settings">[<a class="settings" style="text-decoration: none;" href="#">настроить</a>]</div><div class="links" style="margin-top: 10px"><a href="http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex" target="_blank" title="Качественное продвижение сайтов в сети Интернет"><img src="http://qseo.ru/logo/qseo_logo_w70.png?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex&utm_content=logo_left" alt="Качественное продвижение сайтов в сети Интернет"></a></div></div>';
+
+var urlParams;
+
 
 if(typeof GM_getValue == undefined || GM_getValue('regionStr') == null) {
     regionStr = regionStr_default;
@@ -23,9 +31,6 @@ if(typeof GM_getValue == undefined || GM_getValue('regionStr') == null) {
     regionStr = GM_getValue('regionStr',regionStr_default);
 }
 
-var regionBlock = '<div id="qseo-yandex-regionlist" style="font-size: 11px"><div class="region-default">Регион в настройках: <div class="region-name">[regiondefault]</div><br/></div><div class="list-title">Сменить на:</div><div class="list-items">[regionlist]</div><div class="settings">[<a class="settings" style="text-decoration: none;" href="#">настроить</a>]</div><div class="links" style="margin-top: 10px"><a href="http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex" target="_blank" title="Качественное продвижение сайтов в сети Интернет"><img src="http://qseo.ru/logo/qseo_logo_w70.png?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex&utm_content=logo_left" alt="Качественное продвижение сайтов в сети Интернет"></a></div></div>';
-
-var urlParams;
 
 window.qseoToolsUpdateUrlParams = function() {
     var match,
@@ -67,9 +72,9 @@ function checkSerpBlock(item, check_children) {
   } 
                                                                 
   if(detected) {
-    item.css('background-color','#EDFCFF');
-    item.children('div').css('background-color','#EDFCFF');
-    item.children('a').css('background-color','#EDFCFF');
+    item.css('background-color', color_service);
+    item.children('div').css('background-color', color_service);
+    item.children('a').css('background-color', color_service);
   } 
 }
 
@@ -102,7 +107,7 @@ window.qseoToolsParse = function(event) {
                 e.insertBefore(t, e.firstChild);
                 place ++;
             } else {
-                e.setAttribute('style', 'background:#ffe5e5')
+                e.setAttribute('style', 'background-color: ' + color_warning);
             }
         });
         
@@ -151,7 +156,7 @@ window.qseoToolsParse = function(event) {
         
         $(".main__left").prepend($(regionsListCurrent));
         
-        $('.serp-adv__block').css('background-color','#FFF8E1');
+        $('.serp-adv__block').css('background-color', color_context);
         $('.serp-item__wrap').each(function() { checkSerpBlock($(this), true); });
         $('.serp-block').each(function() { checkSerpBlock($(this),false); });
         
