@@ -2,7 +2,7 @@
 // @name        QSEO-tools-Yandex
 // @namespace   http://qseo.ru
 // @description  Different SEO Tools and helper functions for Yandex Search engine from qseo.ru 
-// @version     2.4
+// @version     2.5
 // @updateURL   https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @downloadURL https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @include     http*://yandex.*/yandsearch*
@@ -20,7 +20,7 @@ var color_warning = '#ffe5e5';
 
 var regionStr;
 
-var regionBlock = '<div id="qseo-yandex-regionlist" style="font-size: 11px"><div class="region-default">Регион в настройках: <div class="region-name">[regiondefault]</div><br/></div><div class="list-title">Сменить на:</div><div class="list-items">[regionlist]</div><div class="settings">[<a class="settings" style="text-decoration: none;" href="#">настроить</a>]</div><div class="links" style="margin-top: 10px"><a href="http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex" target="_blank" title="Качественное продвижение сайтов в сети Интернет"><img src="http://qseo.ru/logo/qseo_logo_w70.png?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex&utm_content=logo_left" alt="Качественное продвижение сайтов в сети Интернет"></a></div></div>';
+var regionBlock = '<div id="qseo-yandex-regionlist" style="font-size: 11px"><div class="region-default">Регион в настройках: <div class="region-name">[regiondefault]</div><br/></div><div class="list-title">Сменить на:</div><div class="list-items">[regionlist]</div><div class="settings">[<a class="settings" style="text-decoration: none;" href="#">настроить</a>]</div>[resultsTotal]<div class="links" style="margin-top: 10px"><a href="http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex" target="_blank" title="Качественное продвижение сайтов в сети Интернет"><img src="http://qseo.ru/logo/qseo_logo_w70.png?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex&utm_content=logo_left" alt="Качественное продвижение сайтов в сети Интернет"></a></div></div>';
 
 var urlParams;
 
@@ -43,6 +43,7 @@ window.qseoToolsUpdateUrlParams = function() {
     while (match = search.exec(query))
         urlParams[decode(match[1])] = decode(match[2]);
 }
+
 
 function urlAddLr(lr) {
     if(lr == -1) {
@@ -153,6 +154,14 @@ window.qseoToolsParse = function(event) {
           regionsListCurrent = regionsListCurrent.replace('[regiondefault]',  'Авто');
         }
         
+        var resultsTotal = $(".input__found").text();
+        
+        if(resultsTotal) {
+          resultsTotal = resultsTotal.replace(/[^\s]+\s/,"");
+          regionsListCurrent = regionsListCurrent.replace("[resultsTotal]", "<div class='qseo-results-total'>" + resultsTotal + "</div>");
+        } else {
+          regionsListCurrent = regionsListCurrent.replace("[resultsTotal]","");
+        }
         
         $(".main__left").prepend($(regionsListCurrent));
         
