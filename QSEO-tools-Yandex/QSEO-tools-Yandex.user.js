@@ -2,12 +2,12 @@
 // @name        QSEO-tools-Yandex
 // @namespace   http://qseo.ru
 // @description  Different SEO Tools and helper functions for Yandex Search engine from qseo.ru 
-// @version     2.6
+// @version     2.7
 // @updateURL   https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @downloadURL https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @include     http*://yandex.*/yandsearch*
 // @include     http*://yandex.*/search*
-// @require     http://code.jquery.com/jquery-latest.min.js
+// @require     //yastatic.net/jquery/1.8.3/jquery.min.js
 // @require     https://raw.githubusercontent.com/carhartl/jquery-cookie/master/src/jquery.cookie.js
 // @grant GM_getValue
 // @grant GM_setValue
@@ -105,7 +105,7 @@ window.qseoToolsParse = function(event, forcecheck = false) {
   [].forEach.call(document.querySelectorAll('.serp-item_plain_yes,.z-address'), function(e) {
       if (e.getElementsByClassName('serp-item__label').length == 0) {
           var t = document.createElement('div');
-          t.setAttribute('style', 'float: left; margin-left: -20px; padding-top: 13px; text-align: right; width: 24px;');
+          t.setAttribute('style', 'float: left; margin-left: -47px; padding-top: 5px; text-align: right; width: 24px;');
           t.setAttribute('class', 'qseo-place-number');
           t.innerHTML = place + '.';
           e.insertBefore(t, e.firstChild);
