@@ -2,6 +2,7 @@
 // @name        QSEO-tools-Yandex
 // @namespace   http://qseo.ru
 // @description  Different SEO Tools and helper functions for Yandex Search engine from qseo.ru 
+// @icon          http://qseo.ru/logo/logo_q.svg
 // @version     2.7
 // @updateURL   https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @downloadURL https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
