@@ -3,7 +3,7 @@
 // @namespace   http://qseo.ru
 // @description  Different SEO Tools and helper functions for Yandex Search engine from qseo.ru 
 // @icon          http://qseo.ru/logo/logo_q.svg
-// @version     2.7
+// @version     2.8
 // @updateURL   https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @downloadURL https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @include     http*://yandex.*/yandsearch*
@@ -27,172 +27,174 @@ var urlParams;
 
 
 if(typeof GM_getValue == undefined || GM_getValue('regionStr') == null) {
-    regionStr = regionStr_default;
+  regionStr = regionStr_default;
 } else {
-    regionStr = GM_getValue('regionStr',regionStr_default);
+  regionStr = GM_getValue('regionStr',regionStr_default);
 }
 
 
 window.qseoToolsUpdateUrlParams = function() {
-    var match,
-        pl     = /\+/g,  // Regex for replacing addition symbol with a space
-        search = /([^&=]+)=?([^&]*)/g,
-        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
-        query  = window.location.search.substring(1);
-    
-    urlParams = {};
-    while (match = search.exec(query))
-        urlParams[decode(match[1])] = decode(match[2]);
-}
+  var match,
+    pl     = /\+/g,  // Regex for replacing addition symbol with a space
+    search = /([^&=]+)=?([^&]*)/g,
+    decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+    query  = window.location.search.substring(1);
+
+  urlParams = {};
+  while (match = search.exec(query))
+    urlParams[decode(match[1])] = decode(match[2]);
+};
 
 
 function urlAddLr(lr) {
-    if(lr == -1) {
-        return document.URL.replace(/[\?&]lr=\d+/,''); 
-    }
-    if(urlParams['lr']) {
-        return document.URL.replace(/lr=\d+/,'lr=' + lr);
-    } else {
-        return document.URL + '&lr=' + lr;
-    }
+  if(lr == -1) {
+    return document.URL.replace(/[\?&]lr=\d+/,'');
+  }
+  if(urlParams['lr']) {
+    return document.URL.replace(/lr=\d+/,'lr=' + lr);
+  } else {
+    return document.URL + '&lr=' + lr;
+  }
 }
 
 
 function checkSerpBlock(item, check_children) {
-    
+
   var detected=false;
-    
+
   if(item.attr('class').search(/images|video|market|address|news/) != -1) {
     detected = true;
   } else if(check_children == true) {
     item.children('div').each(function() {
-        if($(this).attr('class').search(/images|video|market|address|news/) != -1) {
-          detected = true;
-          return;
-        }
+      if($(this).attr('class').search(/images|video|market|address|news/) != -1) {
+        detected = true;
+        return;
+      }
     });
-  } 
-                                                                
+  }
+
   if(detected) {
     item.css('background-color', color_service);
     item.children('div').css('background-color', color_service);
     item.children('a').css('background-color', color_service);
-  } 
+  }
 }
 
-window.qseoToolsParse = function(event, forcecheck = false) {
+window.qseoToolsParse = function(event, forcecheck) {
   qseoToolsUpdateUrlParams();
-  
-  if(!forcecheck && ($(".qseo-place-number").length || !$(".serp-item_plain_yes").length))  {
-    return
+
+  if( (forcecheck == 'undefined' || !forcecheck) && ($(".qseo-place-number").length || !$(".serp-item_plain_yes").length))  {
+    return;
   }
-      
+
   $("#qseo-yandex-regionlist").remove();
   $(".qseo-place-number").remove();
-  
+
   var numdoc = urlParams['numdoc']?urlParams['numdoc']:10,
-      p = urlParams['p']?urlParams['p']:1;
+    p = urlParams['p']?urlParams['p']:0;
   var m = document.cookie.match(new RegExp('[; ]yp=([^\\s;]*)'));
   if (m) {
-      m = decodeURIComponent(m[1]).match(new RegExp('nd:([^\\s#]*)'));
-      if (m) numdoc = decodeURIComponent('' + m[1][0] + m[1][1] + '')
-          }
-  
+    m = decodeURIComponent(m[1]).match(new RegExp('nd:([^\\s#]*)'));
+    if (m) numdoc = decodeURIComponent('' + m[1][0] + m[1][1] + '')
+  }
+
   var b = document.getElementsByClassName('button_checked_yes')[0];
   if (typeof b !== 'undefined') {
-      p = parseInt(document.all ? b.innerText : b.textContent)
+    p = parseInt(document.all ? b.innerText : b.textContent)
   }
-  var place = (p - 1) * numdoc + 1;
+  var place = p * numdoc + 1;
   [].forEach.call(document.querySelectorAll('.serp-item_plain_yes,.z-address'), function(e) {
+    if (!e.classList.contains('serp-adv__item')) {
       if (e.getElementsByClassName('serp-item__label').length == 0) {
-          var t = document.createElement('div');
-          t.setAttribute('style', 'float: left; margin-left: -47px; padding-top: 5px; text-align: right; width: 24px;');
-          t.setAttribute('class', 'qseo-place-number');
-          t.innerHTML = place + '.';
-          e.insertBefore(t, e.firstChild);
-          place ++;
+        var t = document.createElement('div');
+        t.setAttribute('style', 'float: left; margin-left: -47px; padding-top: 5px; text-align: right; width: 24px;');
+        t.setAttribute('class', 'qseo-place-number');
+        t.innerHTML = place + '.';
+        e.insertBefore(t, e.firstChild);
+        place++;
       } else {
-          e.setAttribute('style', 'background-color: ' + color_warning);
+        e.setAttribute('style', 'background-color: ' + color_warning);
       }
+    }
   });
-  
+
   if(regionStr) {
-      
-      var regionList = regionStr.split(';');
-      
-      var regionListKeys = [];
-      
-      var regionsListCurrent = '';    
-      
-      var YaCookieRegion = $.cookie('yandex_gid');
-      
-      for(key in regionList) {
-          if(!regionList[key]) continue;
-          
-          region = regionList[key].split(':');
-          regionListKeys[region[0]] = region[1];
-          
-          str = '<a style="text-decoration: none" href=' + urlAddLr(region[0]) + '>' + region[1] + '</a>';
-          if((region[0]=='-1' && urlParams['lr'] == undefined) || (urlParams['lr'] == region[0])) { 
-              str = '<div style="background: #FFF8DC; display: table-cell"><strong>' + str + '</strong>'; 
-              if(YaCookieRegion != region[0])
-                str = str + '<br/>[<a id="qseo-region-save" class="'+region[0]+'" href="#">Запомнить</a>]';
-              str = str + '</div>'; 
-          }
-          str = '<div style="line-height: 1.7em">' + str + '</div>';
-          regionsListCurrent = regionsListCurrent + str;
+
+    var regionList = regionStr.split(';');
+
+    var regionListKeys = [];
+
+    var regionsListCurrent = '';
+
+    var YaCookieRegion = $.cookie('yandex_gid');
+
+    for(key in regionList) {
+      if(!regionList[key]) continue;
+
+      region = regionList[key].split(':');
+      regionListKeys[region[0]] = region[1];
+
+      str = '<a style="text-decoration: none" href=' + urlAddLr(region[0]) + '>' + region[1] + '</a>';
+      if((region[0]=='-1' && urlParams['lr'] == undefined) || (urlParams['lr'] == region[0])) {
+        str = '<div style="background: #FFF8DC; display: table-cell"><strong>' + str + '</strong>';
+        if(YaCookieRegion != region[0])
+          str = str + '<br/>[<a id="qseo-region-save" class="'+region[0]+'" href="#">Запомнить</a>]';
+        str = str + '</div>';
       }
-      
-      regionsListCurrent = regionBlock.replace('[regionlist]',regionsListCurrent);
+      str = '<div style="line-height: 1.7em">' + str + '</div>';
+      regionsListCurrent = regionsListCurrent + str;
+    }
+
+    regionsListCurrent = regionBlock.replace('[regionlist]',regionsListCurrent);
   } else {
-      regionsListCurrent = regionBlock.replace('[regionlist]','[не настроено]');
+    regionsListCurrent = regionBlock.replace('[regionlist]','[не настроено]');
   }
-  
+
   if(YaCookieRegion) {
     if(regionListKeys[YaCookieRegion])
-        YaCookieRegion = regionListKeys[YaCookieRegion];
+      YaCookieRegion = regionListKeys[YaCookieRegion];
     else
-        YaCookieRegion = "id " + YaCookieRegion;
+      YaCookieRegion = "id " + YaCookieRegion;
     regionsListCurrent = regionsListCurrent.replace('[regiondefault]',  YaCookieRegion);
   } else {
     regionsListCurrent = regionsListCurrent.replace('[regiondefault]',  'Авто');
   }
-  
+
   var resultsTotal = $(".input__found").text();
-  
+
   if(resultsTotal) {
     resultsTotal = resultsTotal.replace(/[^\s]+\s/,"");
     regionsListCurrent = regionsListCurrent.replace("[resultsTotal]", "<div class='qseo-results-total'>" + resultsTotal + "</div>");
   } else {
     regionsListCurrent = regionsListCurrent.replace("[resultsTotal]","");
   }
-  
+
   $(".main__left").prepend($(regionsListCurrent));
-  
+
   $('.serp-adv__block').css('background-color', color_context);
   $('.serp-item__wrap').each(function() { checkSerpBlock($(this), true); });
   $('.serp-block').each(function() { checkSerpBlock($(this),false); });
-  
+
   $('#qseo-yandex-regionlist a.qseo-settings').click(function() {
-      regionStr = prompt("Настройка списка регионов (формат: id1:name1;id2:name2;id3:name3): ", regionStr);
-      GM_setValue('regionStr', regionStr);
+    regionStr = prompt("Настройка списка регионов (формат: id1:name1;id2:name2;id3:name3): ", regionStr);
+    GM_setValue('regionStr', regionStr);
   });
   $('#qseo-yandex-regionlist a.qseo-update').click(function() {
-      window.qseoToolsParse(event,true);
-  });
-  
-  $('#qseo-region-save').click(function() {
-      var saveRegionId = $(this).attr("class");
-      $.cookie('yandex_gid', saveRegionId, {path: "/", domain: "yandex.ru"});
-      $(this).text('Запомнено');
-      $('.region-default .region-name').text($(this).parent().children('strong').text());
+    window.qseoToolsParse(event,true);
   });
 
-}
+  $('#qseo-region-save').click(function() {
+    var saveRegionId = $(this).attr("class");
+    $.cookie('yandex_gid', saveRegionId, {path: "/", domain: "yandex.ru"});
+    $(this).text('Запомнено');
+    $('.region-default .region-name').text($(this).parent().children('strong').text());
+  });
+
+};
 
 
 window.qseoToolsParse();
 
 setTimeout(function() { window.qseoToolsParse(false, true);  }, 3000);
 
-$('.main__center-inner').get(0).addEventListener('DOMNodeInserted', qseoToolsParse, false); 
+$('.main__center').get(0).addEventListener('DOMNodeInserted', qseoToolsParse, false);
