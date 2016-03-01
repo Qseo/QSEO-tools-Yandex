@@ -3,12 +3,12 @@
 // @namespace   http://qseo.ru
 // @description  Different SEO Tools and helper functions for Yandex Search engine from qseo.ru 
 // @icon          http://qseo.ru/logo/logo_q.svg
-// @version     2.8
+// @version     2.9
 // @updateURL   https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @downloadURL https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @include     http*://yandex.*/yandsearch*
 // @include     http*://yandex.*/search*
-// @require     //yastatic.net/jquery/1.8.3/jquery.min.js
+// @require     http://yastatic.net/jquery/1.8.3/jquery.min.js
 // @require     https://raw.githubusercontent.com/carhartl/jquery-cookie/master/src/jquery.cookie.js
 // @grant GM_getValue
 // @grant GM_setValue
@@ -28,7 +28,8 @@ var urlParams;
 
 if(typeof GM_getValue == undefined || GM_getValue('regionStr') == null) {
   regionStr = regionStr_default;
-} else {
+}
+else {
   regionStr = GM_getValue('regionStr',regionStr_default);
 }
 
@@ -41,8 +42,10 @@ window.qseoToolsUpdateUrlParams = function() {
     query  = window.location.search.substring(1);
 
   urlParams = {};
-  while (match = search.exec(query))
+
+  while (match = search.exec(query)) {
     urlParams[decode(match[1])] = decode(match[2]);
+  }
 };
 
 
@@ -50,21 +53,23 @@ function urlAddLr(lr) {
   if(lr == -1) {
     return document.URL.replace(/[\?&]lr=\d+/,'');
   }
+
   if(urlParams['lr']) {
     return document.URL.replace(/lr=\d+/,'lr=' + lr);
-  } else {
+  }
+  else {
     return document.URL + '&lr=' + lr;
   }
 }
 
 
 function checkSerpBlock(item, check_children) {
-
-  var detected=false;
+  var detected = false;
 
   if(item.attr('class').search(/images|video|market|address|news/) != -1) {
     detected = true;
-  } else if(check_children == true) {
+  }
+  else if(check_children == true) {
     item.children('div').each(function() {
       if($(this).attr('class').search(/images|video|market|address|news/) != -1) {
         detected = true;
@@ -90,36 +95,45 @@ window.qseoToolsParse = function(event, forcecheck) {
   $("#qseo-yandex-regionlist").remove();
   $(".qseo-place-number").remove();
 
-  var numdoc = urlParams['numdoc']?urlParams['numdoc']:10,
-    p = urlParams['p']?urlParams['p']:0;
-  var m = document.cookie.match(new RegExp('[; ]yp=([^\\s;]*)'));
+  var numdoc = urlParams['numdoc'] ? urlParams['numdoc'] : 10,
+      p = urlParams['p'] ? urlParams['p'] : 0;
+
+  var m = document.cookie.match( new RegExp('[; ]yp=([^\\s;]*)') );
+
   if (m) {
     m = decodeURIComponent(m[1]).match(new RegExp('nd:([^\\s#]*)'));
-    if (m) numdoc = decodeURIComponent('' + m[1][0] + m[1][1] + '')
+
+    if (m) {
+      numdoc = decodeURIComponent('' + m[1][0] + m[1][1] + '')
+    }
   }
 
   var b = document.getElementsByClassName('button_checked_yes')[0];
+
   if (typeof b !== 'undefined') {
     p = parseInt(document.all ? b.innerText : b.textContent)
   }
+
   var place = p * numdoc + 1;
-  [].forEach.call(document.querySelectorAll('.serp-item_plain_yes,.z-address'), function(e) {
-    if (!e.classList.contains('serp-adv__item')) {
+
+  [].forEach.call(document.querySelectorAll('.serp-item,.z-address'), function(e) {
+    if ( e.getElementsByClassName('serp-adv-item__label').length == 0 && e.getElementsByClassName('serp-item__greenurl').length != 0 ) {
       if (e.getElementsByClassName('serp-item__label').length == 0) {
         var t = document.createElement('div');
+
         t.setAttribute('style', 'float: left; margin-left: -47px; padding-top: 5px; text-align: right; width: 24px;');
         t.setAttribute('class', 'qseo-place-number');
         t.innerHTML = place + '.';
         e.insertBefore(t, e.firstChild);
         place++;
-      } else {
+      }
+      else {
         e.setAttribute('style', 'background-color: ' + color_warning);
       }
     }
   });
 
   if(regionStr) {
-
     var regionList = regionStr.split(';');
 
     var regionListKeys = [];
@@ -135,28 +149,38 @@ window.qseoToolsParse = function(event, forcecheck) {
       regionListKeys[region[0]] = region[1];
 
       str = '<a style="text-decoration: none" href=' + urlAddLr(region[0]) + '>' + region[1] + '</a>';
+
       if((region[0]=='-1' && urlParams['lr'] == undefined) || (urlParams['lr'] == region[0])) {
         str = '<div style="background: #FFF8DC; display: table-cell"><strong>' + str + '</strong>';
-        if(YaCookieRegion != region[0])
-          str = str + '<br/>[<a id="qseo-region-save" class="'+region[0]+'" href="#">Запомнить</a>]';
+
+        if(YaCookieRegion != region[0]) {
+          str = str + '<br/>[<a id="qseo-region-save" class="' + region[0] + '" href="#">Запомнить</a>]';
+        }
+
         str = str + '</div>';
       }
+
       str = '<div style="line-height: 1.7em">' + str + '</div>';
       regionsListCurrent = regionsListCurrent + str;
     }
 
     regionsListCurrent = regionBlock.replace('[regionlist]',regionsListCurrent);
-  } else {
+  }
+  else {
     regionsListCurrent = regionBlock.replace('[regionlist]','[не настроено]');
   }
 
   if(YaCookieRegion) {
-    if(regionListKeys[YaCookieRegion])
+    if(regionListKeys[YaCookieRegion]) {
       YaCookieRegion = regionListKeys[YaCookieRegion];
-    else
+    }
+    else {
       YaCookieRegion = "id " + YaCookieRegion;
+    }
+
     regionsListCurrent = regionsListCurrent.replace('[regiondefault]',  YaCookieRegion);
-  } else {
+  }
+  else {
     regionsListCurrent = regionsListCurrent.replace('[regiondefault]',  'Авто');
   }
 
@@ -165,26 +189,29 @@ window.qseoToolsParse = function(event, forcecheck) {
   if(resultsTotal) {
     resultsTotal = resultsTotal.replace(/[^\s]+\s/,"");
     regionsListCurrent = regionsListCurrent.replace("[resultsTotal]", "<div class='qseo-results-total'>" + resultsTotal + "</div>");
-  } else {
+  }
+  else {
     regionsListCurrent = regionsListCurrent.replace("[resultsTotal]","");
   }
 
   $(".main__left").prepend($(regionsListCurrent));
 
-  $('.serp-adv__block').css('background-color', color_context);
+  $('.serp-adv-item__label').parents('.serp-item').css('background-color', color_context);
   $('.serp-item__wrap').each(function() { checkSerpBlock($(this), true); });
-  $('.serp-block').each(function() { checkSerpBlock($(this),false); });
+  $('.serp-item').each(function() { checkSerpBlock($(this),false); });
 
   $('#qseo-yandex-regionlist a.qseo-settings').click(function() {
     regionStr = prompt("Настройка списка регионов (формат: id1:name1;id2:name2;id3:name3): ", regionStr);
     GM_setValue('regionStr', regionStr);
   });
+
   $('#qseo-yandex-regionlist a.qseo-update').click(function() {
     window.qseoToolsParse(event,true);
   });
 
   $('#qseo-region-save').click(function() {
     var saveRegionId = $(this).attr("class");
+
     $.cookie('yandex_gid', saveRegionId, {path: "/", domain: "yandex.ru"});
     $(this).text('Запомнено');
     $('.region-default .region-name').text($(this).parent().children('strong').text());
