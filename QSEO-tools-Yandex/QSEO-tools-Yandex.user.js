@@ -3,7 +3,7 @@
 // @namespace   http://qseo.ru
 // @description  Different SEO Tools and helper functions for Yandex Search engine from qseo.ru 
 // @icon          http://qseo.ru/logo/logo_q.svg
-// @version     2.9
+// @version     3.0
 // @updateURL   https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @downloadURL https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @include     http*://yandex.*/yandsearch*
@@ -82,6 +82,7 @@ function checkSerpBlock(item, check_children) {
     item.css('background-color', color_service);
     item.children('div').css('background-color', color_service);
     item.children('a').css('background-color', color_service);
+    item.addClass('exclude');
   }
 }
 
@@ -117,7 +118,7 @@ window.qseoToolsParse = function(event, forcecheck) {
   var place = p * numdoc + 1;
 
   [].forEach.call(document.querySelectorAll('.serp-item,.z-address'), function(e) {
-    if ( e.getElementsByClassName('serp-adv-item__label').length == 0 && e.getElementsByClassName('serp-item__greenurl').length != 0 ) {
+    if (e.className.search(/images|video|market|address|news/) == -1 && e.getElementsByClassName('serp-adv-item__label').length == 0 && e.getElementsByClassName('serp-item__greenurl').length != 0 ) {
       if (e.getElementsByClassName('serp-item__label').length == 0) {
         var t = document.createElement('div');
 
