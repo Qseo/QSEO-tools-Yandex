@@ -3,7 +3,7 @@
 // @namespace   http://qseo.ru
 // @description  Different SEO Tools and helper functions for Yandex Search engine from qseo.ru 
 // @icon          http://qseo.ru/logo/logo_q.svg
-// @version     3.2
+// @version     3.3
 // @updateURL   https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @downloadURL https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @include     http*://yandex.*/yandsearch*
@@ -21,7 +21,7 @@ var color_service = '#EDFCFF';
 var color_warning = '#ffe5e5';
 
 var regionStr;
-var regionBlock = '<div id="qseo-yandex-regionlist" style="font-size: 11px"><div class="region-default">Регион в настройках: <div class="region-name">[regiondefault]</div><br/></div><div class="list-title">Сменить на:</div><div class="list-items">[regionlist]</div><div class="qseo-buttons">[<a class="qseo-update" style="text-decoration: none;" href="#">обновить</a>] [<a class="qseo-settings" style="text-decoration: none;" href="#">настроить</a>]</div>[resultsTotal]<div class="links" style="margin-top: 10px"><a href="http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex" target="_blank" title="Качественное продвижение сайтов в сети Интернет"><img src="http://qseo.ru/logo/qseo_logo_w70.png?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex&utm_content=logo_left" alt="Качественное продвижение сайтов в сети Интернет"></a></div></div>';
+var regionBlock = '<div id="qseo-yandex-regionlist" style="font-size: 11px;"><div class="region-default">Регион в настройках: <div class="region-name">[regiondefault]</div><br/></div><div class="list-title">Сменить на:</div><div class="list-items">[regionlist]</div><div class="qseo-buttons">[<a class="qseo-update" style="text-decoration: none;" href="#">обновить</a>] [<a class="qseo-settings" style="text-decoration: none;" href="#">настроить</a>]</div>[resultsTotal]<div class="links" style="margin-top: 10px"><a href="http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex" target="_blank" title="Качественное продвижение сайтов в сети Интернет"><img src="http://qseo.ru/logo/qseo_logo_w70.png?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex&utm_content=logo_left" alt="Качественное продвижение сайтов в сети Интернет"></a></div></div>';
 
 var urlParams;
 
@@ -118,7 +118,7 @@ window.qseoToolsParse = function(event, forcecheck) {
   var place = p * numdoc + 1;
 
   [].forEach.call(document.querySelectorAll('.serp-item,.z-address'), function(e) {
-    if (e.className.search(/images|video|market|address|news|companies/) == -1 && e.getElementsByClassName('label_color_yellow').length == 0 && e.getElementsByClassName('organic__path').length != 0 ) {
+    if (e.className.search(/images|video|market|address|news|companies|serp-adv-item/) == -1 && e.getElementsByClassName('label_color_yellow').length == 0 && e.getElementsByClassName('organic__path').length != 0 ) {
       if (e.getElementsByClassName('serp-item__label').length == 0) {
         var t = document.createElement('div');
 
@@ -195,9 +195,9 @@ window.qseoToolsParse = function(event, forcecheck) {
     regionsListCurrent = regionsListCurrent.replace("[resultsTotal]","");
   }
 
-  $(".main__left").prepend($(regionsListCurrent));
+  $(".content__right").prepend($(regionsListCurrent));
 
-  $('.serp-adv-item__label').parents('.serp-item').css('background-color', color_context);
+  $('.serp-adv-item').css('background-color', color_context);
   $('.serp-item__wrap').each(function() { checkSerpBlock($(this), true); });
   $('.serp-item').each(function() { checkSerpBlock($(this),false); });
 
