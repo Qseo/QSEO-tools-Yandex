@@ -13,7 +13,7 @@ Author: Alexey Murz Korepov
 
 E-mail: seo@qseo.ru
 
-Official page: http://info.qseo.ru/technologies/internet-marketing/serp-position-numbers/yandex
+Official page: https://info.qseo.ru/technologies/internet-marketing/serp-position-numbers/yandex
 
 Description in Russian
 ========================
