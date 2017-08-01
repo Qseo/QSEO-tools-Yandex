@@ -3,7 +3,7 @@
 // @namespace   http://qseo.ru
 // @description  Different SEO Tools and helper functions for Yandex Search engine from qseo.ru 
 // @icon          http://qseo.ru/logo/logo_q.svg
-// @version     3.3
+// @version     3.4
 // @updateURL   https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @downloadURL https://github.com/Qseo/QSEO-tools-Yandex/raw/master/QSEO-tools-Yandex/QSEO-tools-Yandex.user.js
 // @include     http*://yandex.*/yandsearch*
@@ -21,7 +21,7 @@ var color_service = '#EDFCFF';
 var color_warning = '#ffe5e5';
 
 var regionStr;
-var regionBlock = '<div id="qseo-yandex-regionlist" style="font-size: 11px;"><div class="region-default">Регион в настройках: <div class="region-name">[regiondefault]</div><br/></div><div class="list-title">Сменить на:</div><div class="list-items">[regionlist]</div><div class="qseo-buttons">[<a class="qseo-update" style="text-decoration: none;" href="#">обновить</a>] [<a class="qseo-settings" style="text-decoration: none;" href="#">настроить</a>]</div>[resultsTotal]<div class="links" style="margin-top: 10px"><a href="http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex" target="_blank" title="Качественное продвижение сайтов в сети Интернет"><img src="http://qseo.ru/logo/qseo_logo_w70.png?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex&utm_content=logo_left" alt="Качественное продвижение сайтов в сети Интернет"></a></div></div>';
+var regionBlock = '<div id="qseo-yandex-regionlist" style="font-size: 11px;"><div class="region-default">Регион в настройках: <div class="region-name">[regiondefault]</div><br/></div><div class="list-title">Сменить на:</div><div class="list-items">[regionlist]</div><div class="qseo-buttons">[<a class="qseo-update" style="text-decoration: none;" href="#">обновить</a>] [<a class="qseo-settings" style="text-decoration: none;" href="#">настроить</a>]</div>[resultsTotal]<div class="links" style="font-size: 12px; margin: 10px 0">Номера позиций © <a href="http://qseo.ru/?utm_source=qseo-tools&utm_medium=banner&utm_campaign=qseo-tools-yandex" target="_blank" title="Качественное продвижение сайтов в сети Интернет">qseo.ru</a></div></div>';
 
 var urlParams;
 
@@ -66,12 +66,12 @@ function urlAddLr(lr) {
 function checkSerpBlock(item, check_children) {
   var detected = false;
 
-  if(item.attr('class').search(/images|video|market|address|news/) != -1) {
+  if(item.attr('class').search(/images|video|market|address|news|translate/) != -1) {
     detected = true;
   }
   else if(check_children == true) {
     item.children('div').each(function() {
-      if($(this).attr('class').search(/images|video|market|address|news/) != -1) {
+      if($(this).attr('class').search(/images|video|market|address|news|translate/) != -1) {
         detected = true;
         return;
       }
@@ -118,7 +118,7 @@ window.qseoToolsParse = function(event, forcecheck) {
   var place = p * numdoc + 1;
 
   [].forEach.call(document.querySelectorAll('.serp-item,.z-address'), function(e) {
-    if (e.className.search(/images|video|market|address|news|companies|serp-adv-item/) == -1 && e.getElementsByClassName('label_color_yellow').length == 0 && e.getElementsByClassName('organic__path').length != 0 ) {
+    if (e.className.search(/images|video|market|address|news|companies|serp-adv-item|translate/) == -1 && e.getElementsByClassName('label_color_yellow').length == 0 && e.getElementsByClassName('organic__path').length != 0 ) {
       if (e.getElementsByClassName('serp-item__label').length == 0) {
         var t = document.createElement('div');
 
